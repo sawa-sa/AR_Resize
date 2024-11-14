@@ -123,7 +123,7 @@
 
         // グループ化して、立方体の底面をマーカーに合わせる
         const scatterGroup = new THREE.Group();
-        scatterGroup.position.set(0, 0.5, 0); // 底面の重心をマーカーの中心に
+        scatterGroup.position.set(0, 1, 0); // 底面の重心をマーカーの中心に
 
         normalizedData.forEach(point => {
           const geometry = new THREE.SphereGeometry(0.03, 16, 16); // 球のサイズを調整
