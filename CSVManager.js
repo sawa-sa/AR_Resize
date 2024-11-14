@@ -1,10 +1,8 @@
-// CSVManager.js
-
 // CSVファイルを読み込む関数
 async function loadCSVData(url) {
   const response = await fetch(url);
   const text = await response.text();
-  const rows = text.split('\n').slice(1); // ヘッダーを除去
+  const rows = text.trim().split('\n').slice(1); // ヘッダー行を除去
 
   const data = [];
   rows.forEach(row => {
@@ -20,26 +18,37 @@ async function loadCSVData(url) {
   return data;
 }
 
-// データを0〜1の範囲に正規化する関数
+// データを-1〜1の範囲に正規化し、中心を(0,0,0)に配置する関数（比率を保つ）
 function normalizeData(data) {
-  const min = { x: Infinity, y: Infinity, z: Infinity };
-  const max = { x: -Infinity, y: -Infinity, z: -Infinity };
+  const mean = { x: 0, y: 0, z: 0 };
 
-  // データの最大・最小値を求める
+  // 各軸の平均を計算して中心化の準備
   data.forEach(point => {
-    min.x = Math.min(min.x, point.x);
-    min.y = Math.min(min.y, point.y);
-    min.z = Math.min(min.z, point.z);
-    max.x = Math.max(max.x, point.x);
-    max.y = Math.max(max.y, point.y);
-    max.z = Math.max(max.z, point.z);
+    mean.x += point.x;
+    mean.y += point.y;
+    mean.z += point.z;
   });
+  mean.x /= data.length;
+  mean.y /= data.length;
+  mean.z /= data.length;
 
-  // 正規化
-  return data.map(point => ({
-    x: (point.x - min.x) / (max.x - min.x),
-    y: (point.y - min.y) / (max.y - min.y),
-    z: (point.z - min.z) / (max.z - min.z)
+  // 平均を引いてデータを中心化
+  const centeredData = data.map(point => ({
+    x: point.x - mean.x,
+    y: point.y - mean.y,
+    z: point.z - mean.z
+  }));
+
+  // 各軸の絶対最大値を求める
+  const maxAbsValue = Math.max(
+    ...centeredData.map(point => Math.max(Math.abs(point.x), Math.abs(point.y), Math.abs(point.z)))
+  );
+
+  // 比率を保ったまま最大絶対値でスケーリング
+  return centeredData.map(point => ({
+    x: point.x / maxAbsValue,
+    y: point.y / maxAbsValue,
+    z: point.z / maxAbsValue
   }));
 }
 

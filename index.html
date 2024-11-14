@@ -67,25 +67,25 @@
       function addAxesWithLabels() {
         const axisMaterial = new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.5 });
 
-        // X軸 (0,0,0) から (1,0,0) まで
+        // X軸 (0,0,0) から (1,0,0) および (-1,0,0) まで
         const xGeometry = new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(-1, 0, 0),
           new THREE.Vector3(1, 0, 0)
         ]);
         const xAxis = new THREE.Line(xGeometry, axisMaterial);
         scene.add(xAxis);
 
-        // Y軸 (0,0,0) から (0,1,0) まで
+        // Y軸 (0,0,0) から (0,1,0) および (0,-1,0) まで
         const yGeometry = new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(0, -1, 0),
           new THREE.Vector3(0, 1, 0)
         ]);
         const yAxis = new THREE.Line(yGeometry, axisMaterial);
         scene.add(yAxis);
 
-        // Z軸 (0,0,0) から (0,0,1) まで
+        // Z軸 (0,0,0) から (0,0,1) および (0,0,-1) まで
         const zGeometry = new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(0, 0, 0),
+          new THREE.Vector3(0, 0, -1),
           new THREE.Vector3(0, 0, 1)
         ]);
         const zAxis = new THREE.Line(zGeometry, axisMaterial);
@@ -97,21 +97,21 @@
           const textMaterial = new THREE.MeshBasicMaterial({ color: 0x444444, transparent: true, opacity: 0.8 });
 
           // X軸ラベル
-          const xTextGeometry = new THREE.TextGeometry('X', { font: font, size: 0.05, height: 0.01 });
+          const xTextGeometry = new THREE.TextGeometry('X', { font: font, size: 0.1, height: 0.01 });
           const xLabel = new THREE.Mesh(xTextGeometry, textMaterial);
-          xLabel.position.set(1.05, 0, 0);
+          xLabel.position.set(1.1, 0, 0);
           scene.add(xLabel);
 
           // Y軸ラベル
-          const yTextGeometry = new THREE.TextGeometry('Y', { font: font, size: 0.05, height: 0.01 });
+          const yTextGeometry = new THREE.TextGeometry('Y', { font: font, size: 0.1, height: 0.01 });
           const yLabel = new THREE.Mesh(yTextGeometry, textMaterial);
-          yLabel.position.set(0, 1.05, 0);
+          yLabel.position.set(0, 1.1, 0);
           scene.add(yLabel);
 
           // Z軸ラベル
-          const zTextGeometry = new THREE.TextGeometry('Z', { font: font, size: 0.05, height: 0.01 });
+          const zTextGeometry = new THREE.TextGeometry('Z', { font: font, size: 0.1, height: 0.01 });
           const zLabel = new THREE.Mesh(zTextGeometry, textMaterial);
-          zLabel.position.set(0, 0, 1.05);
+          zLabel.position.set(0, 0, 1.1);
           scene.add(zLabel);
         });
       }
@@ -122,8 +122,8 @@
         const normalizedData = normalizeData(data);
 
         normalizedData.forEach(point => {
-          const geometry = new THREE.SphereGeometry(0.02, 16, 16); // 球のサイズを小さくする
-          const material = new THREE.MeshBasicMaterial({ color: 0x0000ff }); // 球の色を青にする
+          const geometry = new THREE.SphereGeometry(0.03, 16, 16); // 球のサイズを調整
+          const material = new THREE.MeshBasicMaterial({ color: 0x0000ff }); // 球の色を青に
           const sphere = new THREE.Mesh(geometry, material);
           
           // 正規化した座標を適用
