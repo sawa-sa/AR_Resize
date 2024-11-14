@@ -10,49 +10,44 @@
     <script type="module">
       import { loadCSVData, normalizeData } from './CSVManager.js';
 
-      // Three.jsレンダラーの設定
       const renderer = new THREE.WebGLRenderer({
         antialias: true,
         alpha: true
       });
       renderer.setClearColor(new THREE.Color(), 0);
+      renderer.setSize(640, 480);
+      renderer.domElement.style.position = 'absolute';
+      renderer.domElement.style.top = '0px';
+      renderer.domElement.style.left = '0px';
       document.body.appendChild(renderer.domElement);
 
-      // Three.jsシーンとカメラの設定
       const scene = new THREE.Scene();
       scene.visible = false;
       const camera = new THREE.Camera();
       scene.add(camera);
 
-      // AR.jsのソース設定
       const arToolkitSource = new THREEx.ArToolkitSource({
         sourceType: 'webcam'
       });
 
       arToolkitSource.init(() => {
-        setTimeout(onResize, 2000); // 初期表示時のリサイズ
+        setTimeout(() => {
+          onResize();
+        }, 2000);
       });
 
-      // ウィンドウのリサイズに応じて自動的にサイズを調整する
-      window.addEventListener('resize', onResize);
+      addEventListener('resize', () => {
+        onResize();
+      });
 
       function onResize() {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-
-        // Three.jsのレンダラーのサイズをデバイスの画面サイズに合わせて変更
-        renderer.setSize(width, height);
-
-        // ARToolkitSourceのサイズを調整
         arToolkitSource.onResizeElement();
         arToolkitSource.copyElementSizeTo(renderer.domElement);
-
         if (arToolkitContext.arController !== null) {
           arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
         }
       }
 
-      // AR.jsのコンテキスト設定
       const arToolkitContext = new THREEx.ArToolkitContext({
         cameraParametersUrl: 'data/camera_para.dat',
         detectionMode: 'mono'
